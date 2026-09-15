@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTM Workflow Demo — Messy CRM to Actionable Pipeline</title>
+  <meta name="description" content="A proof-of-concept demonstrating CRM entity resolution, won-account profiling, lookalike prospecting, and hold-for-review workflows using synthetic data.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+
+  <header id="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span class="header-title">GTM Workflow Demo</span>
+      </div>
+      <span class="header-badge">Proof of Concept</span>
+    </div>
+  </header>
+
+  <main id="app">
+
+
+
+    <section id="stage-input" class="stage stage-input">
+      <div class="stage-header-raw">
+        <div class="stage-number">1</div>
+        <div>
+          <h1 id="input-heading">Messy CRM Export</h1>
+          <p class="stage-sub">Synthetic CRM export &mdash; duplicates, missing data, inconsistent formatting</p>
+        </div>
+      </div>
+
+      <div class="raw-tables" id="raw-tables">
+        <div class="raw-table-block">
+          <h2 class="raw-table-title">Accounts <span class="raw-count" id="raw-account-count"></span></h2>
+          <div class="raw-table-wrap">
+            <table id="table-accounts" class="raw-table">
+              <thead>
+                <tr><th>Company</th><th>Domain</th><th>Industry</th><th>Size</th><th>Stage</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="raw-table-block">
+          <h2 class="raw-table-title">Contacts <span class="raw-count" id="raw-contact-count"></span></h2>
+          <div class="raw-table-wrap">
+            <table id="table-contacts" class="raw-table">
+              <thead>
+                <tr><th>Name</th><th>Company</th><th>Title</th><th>Email</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="raw-table-block">
+          <h2 class="raw-table-title">Notes <span class="raw-count" id="raw-note-count"></span></h2>
+          <div class="raw-table-wrap">
+            <table id="table-notes" class="raw-table">
+              <thead>
+                <tr><th>Company</th><th>Rep Note</th><th>Date</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="run-bar">
+        <button id="btn-run" class="btn-run" type="button">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Workflow
+        </button>
+      </div>
+    </section>
+
+
+
+
+    <section id="stage-processing" class="stage stage-processing hidden">
+      <div class="processing-box">
+        <div class="processing-header">
+          <div class="processing-spinner"></div>
+          <h2>Processing CRM Data</h2>
+        </div>
+        <ul class="processing-steps" id="processing-steps">
+          <li data-step="resolve" class="step-pending">
+            <span class="step-icon">○</span>
+            <span class="step-text">Resolve duplicate accounts</span>
+          </li>
+          <li data-step="profile" class="step-pending">
+            <span class="step-icon">○</span>
+            <span class="step-text">Mine won-account profile</span>
+          </li>
+          <li data-step="signals" class="step-pending">
+            <span class="step-icon">○</span>
+            <span class="step-text">Extract signals from notes</span>
+          </li>
+          <li data-step="lookalikes" class="step-pending">
+            <span class="step-icon">○</span>
+            <span class="step-text">Find lookalikes</span>
+          </li>
+          <li data-step="review" class="step-pending">
+            <span class="step-icon">○</span>
+            <span class="step-text">Hold matches for review</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+
+
+    <section id="stage-output" class="stage stage-output hidden">
+
+      <div class="summary-banner" id="summary-banner"></div>
+
+
+      <div class="resolution-section" id="resolution-section">
+        <h2 class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Entity Resolution
+        </h2>
+        <div class="clusters-grid" id="clusters-grid"></div>
+      </div>
+
+
+      <div class="profile-section" id="profile-section">
+        <h2 class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Won-Account Profile
+        </h2>
+        <div id="profile-card"></div>
+      </div>
+
+      <div class="workflow-nav-wrap">
+        <div class="workflow-tabs">
+          <button class="workflow-tab active" id="tab-btn-outbound" type="button">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6z"/></svg>
+            <span>Agent 1: Lookalike Prospecting & Review</span>
+          </button>
+          <button class="workflow-tab" id="tab-btn-inbound" type="button">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            <span>Agent 2: Inbound Lead Qualification</span>
+            <span class="tab-badge" id="tab-inbound-badge">8 Leads</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="tab-content-outbound">
+        <div class="output-panels">
+
+          <div class="panel-accounts">
+            <h2 class="section-title">
+              <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              Resolved Accounts
+            </h2>
+            <div class="accounts-grid" id="accounts-grid"></div>
+          </div>
+
+
+          <div class="panel-review">
+            <div class="review-header">
+              <h2 class="section-title">
+                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Review Queue
+              </h2>
+              <div class="review-counters" id="review-counters"></div>
+            </div>
+            <div id="review-queue"></div>
+            <button id="btn-reset" class="btn-reset hidden" type="button">Reset Review Queue</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-content-inbound" class="hidden">
+        <div class="inbound-section">
+          <div class="inbound-header-card">
+            <div class="inbound-header-info">
+              <div class="inbound-agent-pill">
+                <span class="pulse-dot"></span>
+                Inbound Lead Qualification Agent
+              </div>
+              <h2 class="inbound-main-title">Autonomous ICP Grading & Triage</h2>
+              <p class="inbound-sub">Evaluates inbound demo requests against the extracted won-account ICP. Auto-routes high-intent buyers, flags nurture candidates, and filters low-fit inquiries.</p>
+            </div>
+            <div class="inbound-header-actions">
+              <button id="btn-run-qualify" class="btn-qualify" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-sm-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Run Inbound Agent</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="inbound-filter-bar hidden" id="inbound-filter-bar">
+            <div class="filter-chips">
+              <button class="filter-chip active" data-filter="all">All Submissions (<span id="count-all">8</span>)</button>
+              <button class="filter-chip chip-sq" data-filter="sales_qualified">Sales Qualified (<span id="count-sq">0</span>)</button>
+              <button class="filter-chip chip-mn" data-filter="marketing_nurture">Marketing Nurture (<span id="count-mn">0</span>)</button>
+              <button class="filter-chip chip-dq" data-filter="disqualify">Disqualified (<span id="count-dq">0</span>)</button>
+            </div>
+            <div class="inbound-stats-pill" id="inbound-stats-pill"></div>
+          </div>
+
+          <div id="inbound-leads-container">
+            <div class="inbound-empty-prompt">
+              <div class="inbound-prompt-icon">⚡</div>
+              <h3>Inbound Agent is Standing By</h3>
+              <p>Click <strong>"Run Inbound Agent"</strong> to analyze incoming demo requests against the won-account profile.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="closing-section">
+        <div class="closing-text">
+          <h2>What just happened</h2>
+          <p>A messy CRM export was resolved into canonical accounts, structured around the profile of a won customer, enriched with signals extracted from rep notes, and used to surface potential lookalike accounts. Strong matches were held for review rather than treated as already sent.</p>
+          <p>In addition, the <strong>Inbound Lead Qualification Agent</strong> graded live form inquiries against the identical won profile, providing end-to-end coverage across both inbound and outbound GTM motions.</p>
+          <p>This demo mirrors the publicly described workflows in <strong>Frontrunner&rsquo;s agent library</strong> (Lookalike Prospecting, Review Queue, and Inbound Lead Qualification), using synthetic CRM data.</p>
+          <p class="disclosure">Demo data &mdash; synthetic CRM records created for demonstration purposes.</p>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <section id="stage-error" class="stage stage-error hidden">
+      <div class="error-box">
+        <div class="error-icon-wrap">
+          <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2>The workflow could not be processed.</h2>
+        <p id="error-message">Check the API configuration and try again.</p>
+        <button id="btn-retry" class="btn-run" type="button">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Retry
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal-outreach" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-kicker">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kicker-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Frontrunner SDR Agent
+          </div>
+          <h3 id="modal-outreach-title">Personalized Outreach Draft</h3>
+        </div>
+        <button id="modal-outreach-close" class="modal-close" type="button" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-outreach-body">
+        <div class="modal-loading">
+          <div class="processing-spinner"></div>
+          <p>Agent drafting personalized email using company signals & won-account ICP...</p>
+        </div>
+      </div>
+      <div class="modal-footer" id="modal-outreach-footer">
+        <button id="btn-copy-email" class="btn-copy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-sm-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span id="copy-btn-text">Copy Email</span>
+        </button>
+        <button id="btn-simulate-send" class="btn-simulate" type="button">Simulate Send & Log to CRM</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

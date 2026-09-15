@@ -1,0 +1,77 @@
+const accounts = [
+  { id: "a1", company: "Acme Inc", domain: "acme.com", industry: "B2B SaaS", size: "200-500", stage: "won", rep: "Sarah K." },
+  { id: "a2", company: "ACME", domain: "", industry: "SaaS", size: "~300 employees", stage: "won", rep: "Sarah K." },
+  { id: "a3", company: "acme.com", domain: "acme.com", industry: "", size: "", stage: "won", rep: "Mike R." },
+  { id: "a4", company: "Bolt Logistics", domain: "bolt-logistics.com", industry: "Logistics Tech", size: "150-300", stage: "open", rep: "Sarah K." },
+  { id: "a5", company: "bolt-logistics.com", domain: "bolt-logistics.com", industry: "", size: "200+", stage: "open", rep: "James T." },
+  { id: "a6", company: "BOLT LOGISTICS INC", domain: "", industry: "Supply Chain", size: "250", stage: "open", rep: "Sarah K." },
+  { id: "a7", company: "NovaPay", domain: "novapay.io", industry: "Fintech", size: "100-200", stage: "open", rep: "Mike R." },
+  { id: "a8", company: "Nova Pay", domain: "novapay.io", industry: "Financial Technology", size: "~150", stage: "open", rep: "James T." },
+  { id: "a9", company: "Greenline Analytics", domain: "greenline.io", industry: "B2B SaaS", size: "180-250", stage: "open", rep: "Sarah K." },
+  { id: "a10", company: "Pylon Security", domain: "pylonsec.com", industry: "Cybersecurity", size: "300-500", stage: "open", rep: "James T." },
+  { id: "a11", company: "UrbanStack", domain: "urbanstack.co", industry: "PropTech", size: "50-100", stage: "lost", rep: "Mike R." },
+  { id: "a12", company: "Helios Cloud", domain: "helioscloud.com", industry: "B2B SaaS", size: "250-400", stage: "open", rep: "Sarah K." },
+  { id: "a13", company: "TerraFreight", domain: "terrafreight.com", industry: "Logistics", size: "2000-5000", stage: "lost", rep: "James T." },
+  { id: "a14", company: "Campfire HR", domain: "campfire-hr.com", industry: "HR Tech", size: "100-200", stage: "open", rep: "Mike R." },
+  { id: "a15", company: "Rivian Motors", domain: "rivian.com", industry: "Automotive", size: "10000+", stage: "lost", rep: "Sarah K." },
+  { id: "a16", company: "Clearpath AI", domain: "clearpathi.ai", industry: "B2B SaaS", size: "200-350", stage: "won", rep: "James T." },
+  { id: "a17", company: "Driftwood Media", domain: "driftwoodmedia.co", industry: "Digital Media", size: "30-50", stage: "open", rep: "Mike R." },
+  { id: "a18", company: "SignalWave", domain: "signalwave.io", industry: "B2B SaaS", size: "150-300", stage: "open", rep: "Sarah K." },
+];
+
+const contacts = [
+  { id: "c1", accountId: "a1", name: "John Smith", title: "VP Sales", email: "john.smith@acme.com" },
+  { id: "c2", accountId: "a2", name: "Jon Smith", title: "VP, Sales", email: "" },
+  { id: "c3", accountId: "a1", name: "Rebecca Liu", title: "Head of Marketing", email: "rliu@acme.com" },
+  { id: "c4", accountId: "a3", name: "David Park", title: "CTO", email: "dpark@acme.com" },
+  { id: "c5", accountId: "a4", name: "Maria Santos", title: "Vice President of Sales", email: "maria@bolt-logistics.com" },
+  { id: "c6", accountId: "a5", name: "Maria Santos", title: "VP Sales", email: "" },
+  { id: "c7", accountId: "a6", name: "Kevin O'Brien", title: "Head of Sales", email: "kobrien@bolt-logistics.com" },
+  { id: "c8", accountId: "a7", name: "Priya Patel", title: "VP, Sales", email: "priya@novapay.io" },
+  { id: "c9", accountId: "a8", name: "Priya Patel", title: "Vice President of Sales", email: "" },
+  { id: "c10", accountId: "a7", name: "Alex Chen", title: "CRO", email: "achen@novapay.io" },
+  { id: "c11", accountId: "a9", name: "Tanya Morrison", title: "Head of Sales", email: "tanya@greenline.io" },
+  { id: "c12", accountId: "a9", name: "Omar Farouk", title: "VP Revenue", email: "" },
+  { id: "c13", accountId: "a10", name: "Rachel Kim", title: "VP Sales", email: "rachel@pylonsec.com" },
+  { id: "c14", accountId: "a11", name: "Nathan Cole", title: "Co-Founder", email: "nathan@urbanstack.co" },
+  { id: "c15", accountId: "a12", name: "Sophie Tran", title: "VP, Sales", email: "sophie@helioscloud.com" },
+  { id: "c16", accountId: "a12", name: "James Reed", title: "Head of Partnerships", email: "" },
+  { id: "c17", accountId: "a13", name: "Bill Matthews", title: "SVP Sales", email: "bmatthews@terrafreight.com" },
+  { id: "c18", accountId: "a14", name: "Lena Johansson", title: "VP Sales", email: "lena@campfire-hr.com" },
+  { id: "c19", accountId: "a16", name: "Derek Wong", title: "Head of Sales", email: "dwong@clearpathi.ai" },
+  { id: "c20", accountId: "a16", name: "Mia Torres", title: "VP Marketing", email: "mia@clearpathi.ai" },
+  { id: "c21", accountId: "a18", name: "Chris Nakamura", title: "VP Sales", email: "cnakamura@signalwave.io" },
+  { id: "c22", accountId: "a17", name: "Ellie Brooks", title: "Founder & CEO", email: "ellie@driftwoodmedia.co" },
+];
+
+const notes = [
+  { id: "n1", accountId: "a1", rep: "Sarah K.", note: "talked to john, they just closed a series b. big round, think it was around $40m. team is really growing fast", date: "2026-08-12" },
+  { id: "n2", accountId: "a2", note: "new vp sales started last week, John Smith came over from Datadog. Really sharp guy, should be a good champion", rep: "Sarah K.", date: "2026-09" },
+  { id: "n3", accountId: "a1", rep: "Mike R.", note: "team doubled this year, moved into a bigger office. They are all-in on product-led growth now", date: "" },
+  { id: "n4", accountId: "a4", rep: "Sarah K.", note: "they are hiring their first sales ops person, Maria mentioned they want to scale outbound this quarter", date: "2026-09-01" },
+  { id: "n5", accountId: "a5", rep: "James T.", note: "new CRO joined last month from Flexport. Sounds like they are restructuring the whole GTM org", date: "2026-08" },
+  { id: "n6", accountId: "a7", rep: "Mike R.", note: "just raised a series A, $15m round. Alex mentioned they're looking at revops tooling", date: "2026-07-20" },
+  { id: "n7", accountId: "a8", rep: "James T.", note: "budget approved for Q4, Priya said they want to invest in outbound infrastructure", date: "" },
+  { id: "n8", accountId: "a9", rep: "Sarah K.", note: "Similar to Acme in a lot of ways. Same space, similar size. Tanya just joined as Head of Sales from HubSpot", date: "2026-08-28" },
+  { id: "n9", accountId: "a9", rep: "Sarah K.", note: "they are expanding into EMEA next quarter, looking for sales engagement tools", date: "2026-09-05" },
+  { id: "n10", accountId: "a10", rep: "James T.", note: "good meeting with rachel, they raised series C last quarter. building out SDR team", date: "2026-06" },
+  { id: "n11", accountId: "a11", rep: "Mike R.", note: "lost this one on pricing, revisit in 6mo. They are too small right now, only like 60 people", date: "2026-05-15" },
+  { id: "n12", accountId: "a12", rep: "Sarah K.", note: "strong interest, sophie mentioned they're replacing their current outbound stack. team growing 40% yoy", date: "2026-09-10" },
+  { id: "n13", accountId: "a13", rep: "James T.", note: "way too big and slow, procurement process is 9 months. not a fit right now", date: "2026-04-20" },
+  { id: "n14", accountId: "a14", rep: "Mike R.", note: "interesting company, HR tech but their GTM motion is very similar to B2B SaaS. new VP sales started in august", date: "2026-09" },
+  { id: "n15", accountId: "a18", rep: "Sarah K.", note: "chris is building out the sales team, went from 3 to 10 reps this year. series B closed in june, very similar profile to acme", date: "2026-09-08" },
+];
+
+const inboundLeads = [
+  { id: "il1", name: "Rachel Okonkwo", email: "rachel@axiondata.io", company: "Axion Data", title: "VP Revenue Operations", source: "Demo Request", message: "Looking for a tool to automate account research and outbound for our SDR team. 15 reps, growing fast. Series A.", submitted: "2026-09-14T10:30:00Z" },
+  { id: "il2", name: "Tom Whitfield", email: "tom@megacorpenterprises.com", company: "MegaCorp Enterprises", title: "Procurement Analyst", source: "Contact Form", message: "We're evaluating automation solutions. Our team is 5000+ people. Please send pricing for enterprise tier.", submitted: "2026-09-14T11:15:00Z" },
+  { id: "il3", name: "Anika Sharma", email: "anika@pulseops.co", company: "PulseOps", title: "Head of Sales", source: "Demo Request", message: "Saw your YC demo day. We're a 200-person B2B SaaS company looking to scale outbound. Currently using Outreach + HubSpot. Want to see how agents could replace manual workflows.", submitted: "2026-09-14T13:00:00Z" },
+  { id: "il4", name: "Jake Peterson", email: "jake@jakeslandscaping.com", company: "Jake's Landscaping", title: "Owner", source: "Contact Form", message: "Need help with marketing my lawn care business to new neighborhoods", submitted: "2026-09-14T14:20:00Z" },
+  { id: "il5", name: "Mei Lin Chen", email: "mchen@vertexcloud.com", company: "Vertex Cloud", title: "CRO", source: "Demo Request", message: "Our GTM team has 30 reps and we're drowning in CRM data entry. Series B company, 350 employees. Need something that integrates with Salesforce and Gong.", submitted: "2026-09-14T15:45:00Z" },
+  { id: "il6", name: "Student123", email: "student123@gmail.com", company: "", title: "", source: "Contact Form", message: "hi i want to learn about AI agents for my school project can you help", submitted: "2026-09-14T16:00:00Z" },
+  { id: "il7", name: "David Okafor", email: "david@striderevops.com", company: "Strider RevOps", title: "VP Sales", source: "Demo Request", message: "We're a 180-person fintech company. Our sales team spends 60% of time on data entry and lead research. Looking for AI-first solution. Budget approved for Q4.", submitted: "2026-09-14T17:30:00Z" },
+  { id: "il8", name: "Emma Lau", email: "emma@tidewateragency.com", company: "Tidewater Agency", title: "Account Director", source: "Pricing Page", message: "Digital agency with 25 employees. We do some B2B lead gen for clients. Curious if Frontrunner could help with prospecting for our client accounts.", submitted: "2026-09-14T18:10:00Z" },
+];
+
+module.exports = { accounts, contacts, notes, inboundLeads };
+
