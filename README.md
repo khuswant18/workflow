@@ -1,8 +1,8 @@
-# Frontrunner GTM Agent Workflow — Proof of Concept
+# GTM Agent Workflow
 
 An interactive web prototype demonstrating how AI agents automate Go-To-Market (GTM) workflows using messy CRM data.
 
-This project mirrors the publicly described workflows of [Frontrunner](https://usefr.com/) ("Cursor for GTM"), including **Entity Resolution**, **Won-Account ICP Mining**, **Lookalike Prospecting**, **Human-in-the-Loop Review**, and **Inbound Lead Qualification**.
+This project mirrors the publicly describes workflows of Frontrunner including **Entity Resolution**, **Won-Account ICP Mining**, **Lookalike Prospecting**, **Human-in-the-Loop Review**, and **Inbound Lead Qualification**.
 
 ---
 
