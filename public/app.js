@@ -227,6 +227,20 @@
       }
 
       apiData = json.data;
+      if (apiData) {
+        if (!apiData.won_profile && apiData.won_account_profile) {
+          apiData.won_profile = apiData.won_account_profile;
+        }
+        if (!apiData.won_account_profile && apiData.won_profile) {
+          apiData.won_account_profile = apiData.won_profile;
+        }
+        if (!apiData.canonical_clusters && apiData.resolved_clusters) {
+          apiData.canonical_clusters = apiData.resolved_clusters;
+        }
+        if (!apiData.resolved_clusters && apiData.canonical_clusters) {
+          apiData.resolved_clusters = apiData.canonical_clusters;
+        }
+      }
 
       reviewState = (apiData.review_queue || []).map(item => ({
         ...item,
@@ -305,53 +319,68 @@
   }
 
   function renderClusters() {
-    const clusters = apiData.canonical_clusters || [];
+    const clusters = apiData.resolved_clusters || apiData.canonical_clusters || [];
     if (clusters.length === 0) {
       $clustersGrid.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">No duplicate clusters identified.</p>';
       return;
     }
 
-    $clustersGrid.innerHTML = clusters.map((cluster, i) => `
-      <div class="cluster-card" style="animation-delay: ${i * 0.08}s">
-        <div class="cluster-canonical-name">
-          <svg class="cluster-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-          ${esc(cluster.canonical_name)}
+    $clustersGrid.innerHTML = clusters.map((cluster, i) => {
+      const rawAccounts = cluster.original_records || cluster.raw_accounts || [];
+      const reason = cluster.merge_reasoning || cluster.reasoning || "";
+      return `
+        <div class="cluster-card" style="animation-delay: ${i * 0.08}s">
+          <div class="cluster-canonical-name">
+            <svg class="cluster-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            ${esc(cluster.canonical_name)}
+            ${cluster.domain ? `<span style="font-size:0.75rem;color:var(--text-muted);font-weight:normal;margin-left:6px">(${esc(cluster.domain)})</span>` : ""}
+          </div>
+          <div class="cluster-raw-list">
+            ${rawAccounts.map(r => `
+              <div class="cluster-raw-item">
+                <span class="cluster-arrow">↳</span>
+                <span class="cluster-raw-name">${esc(r)}</span>
+              </div>
+            `).join("")}
+          </div>
+          ${reason ? `<div class="cluster-reason">${esc(reason)}</div>` : ""}
         </div>
-        <div class="cluster-raw-list">
-          ${(cluster.raw_accounts || []).map(r => `
-            <div class="cluster-raw-item">
-              <span class="cluster-arrow">↳</span>
-              <span class="cluster-raw-name">${esc(r)}</span>
-            </div>
-          `).join("")}
-        </div>
-        <div class="cluster-reason">${esc(cluster.reasoning)}</div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   function renderProfile() {
-    const p = apiData.won_profile;
+    const p = apiData.won_account_profile || apiData.won_profile;
     if (!p) {
       $profileCard.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem">No won-account profile available.</p>';
       return;
     }
 
-    const attrs = [
-      { label: "Target Industry", val: p.industry },
-      { label: "Company Size Band", val: p.company_size },
-      { label: "Growth Stage", val: p.growth_stage },
-      { label: "Sales Organization", val: p.sales_org },
-      { label: "Key Buying Signals", val: (p.key_signals || []).join(", ") },
-      { label: "Conversion Profile", val: p.description },
-    ].filter(a => a.val);
+    let attrs = [];
+    if (Array.isArray(p.attributes)) {
+      attrs = p.attributes.map(a => ({
+        label: (a.name || "Attribute").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+        val: a.value
+      }));
+    } else {
+      attrs = [
+        { label: "Target Industry", val: p.industry },
+        { label: "Company Size Band", val: p.company_size || p.size_band },
+        { label: "Growth Stage", val: p.growth_stage },
+        { label: "Sales Organization", val: p.sales_org || p.sales_motion },
+        { label: "Key Buying Signals", val: Array.isArray(p.key_signals) ? p.key_signals.join(", ") : p.key_signals },
+        { label: "Conversion Profile", val: p.description },
+      ].filter(a => a.val);
+    }
+
+    const accountTitle = p.account || p.account_name || p.canonical_name || "Won Customer";
 
     $profileCard.innerHTML = `
       <div class="profile-card-inner">
         <div class="profile-header-row">
           <div>
             <div class="profile-badge">WON-ACCOUNT BENCHMARK</div>
-            <div class="profile-name">${esc(p.account_name || "Won Customer")}</div>
+            <div class="profile-name">${esc(accountTitle)} ${p.domain ? `<span style="font-size:0.85rem;color:var(--text-muted);font-weight:normal;">(${esc(p.domain)})</span>` : ""}</div>
           </div>
         </div>
         <div class="profile-attrs">
@@ -548,7 +577,8 @@
   }
 
   async function runQualifyAgent() {
-    if (!apiData || !apiData.won_profile) {
+    const profile = apiData ? (apiData.won_account_profile || apiData.won_profile) : null;
+    if (!apiData || !profile) {
       alert("Please run the main workflow first to mine the won-account profile.");
       return;
     }
@@ -571,7 +601,7 @@
       const res = await fetch("/api/qualify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wonProfile: apiData.won_profile })
+        body: JSON.stringify({ wonProfile: profile })
       });
 
       const json = await res.json();
@@ -709,6 +739,7 @@
       </div>
     `;
 
+    const profile = apiData ? (apiData.won_account_profile || apiData.won_profile) : null;
     let accountObj = (apiData.accounts || []).find(a => a.canonical_name === accountName);
     if (!accountObj) {
       accountObj = { canonical_name: accountName, industry: "B2B SaaS" };
@@ -720,7 +751,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           account: accountObj,
-          wonProfile: apiData.won_profile
+          wonProfile: profile
         })
       });
 

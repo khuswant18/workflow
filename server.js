@@ -196,6 +196,13 @@ app.post("/api/process", async (req, res) => {
       });
     }
 
+    if (!parsed.won_profile && parsed.won_account_profile) {
+      parsed.won_profile = parsed.won_account_profile;
+    }
+    if (!parsed.canonical_clusters && parsed.resolved_clusters) {
+      parsed.canonical_clusters = parsed.resolved_clusters;
+    }
+
     parsed._meta = {
       raw_account_count: accounts.length,
       raw_contact_count: contacts.length,
@@ -266,7 +273,7 @@ Important:
 
 app.post("/api/qualify", async (req, res) => {
   try {
-    const wonProfile = req.body.wonProfile;
+    const wonProfile = req.body.wonProfile || req.body.won_profile || req.body.won_account_profile;
     if (!wonProfile) {
       return res.status(400).json({ success: false, error: "Won-account profile is required." });
     }
@@ -349,7 +356,8 @@ Return ONLY valid JSON:
 
 app.post("/api/draft-outreach", async (req, res) => {
   try {
-    const { account, wonProfile } = req.body;
+    const { account } = req.body;
+    const wonProfile = req.body.wonProfile || req.body.won_profile || req.body.won_account_profile;
     if (!account || !wonProfile) {
       return res.status(400).json({ success: false, error: "Account and won profile required." });
     }
