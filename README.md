@@ -1,89 +1,143 @@
-# Frontrunner Proof-of-Concept Demo
+# Frontrunner GTM Agent Workflow — Proof of Concept
 
-A single-page web application demonstrating an end-to-end GTM workflow using synthetic CRM data:
+An interactive web prototype demonstrating how AI agents automate Go-To-Market (GTM) workflows using messy CRM data.
 
-$$\text{Messy CRM} \longrightarrow \text{Resolve \& Understand} \longrightarrow \text{Find Lookalikes} \longrightarrow \text{Hold for Review}$$
-
-> **Disclaimer**: This demo mirrors workflows that Frontrunner has described publicly (entity resolution, won-account profiling, lookalike prospecting, signal extraction, and review queues). It is an independent proof-of-concept built with synthetic data and does not claim to reproduce Frontrunner's internal proprietary implementation.
+This project mirrors the publicly described workflows of [Frontrunner](https://usefr.com/) ("Cursor for GTM"), including **Entity Resolution**, **Won-Account ICP Mining**, **Lookalike Prospecting**, **Human-in-the-Loop Review**, and **Inbound Lead Qualification**.
 
 ---
 
-## What It Demonstrates
+## ⚡ How It Works
 
-1. **Messy CRM Ingestion (Stage 1)**: Visualizes deliberately dirty CRM data containing duplicate account records, fragmented contact listings, unstandardized job titles, and unformatted freeform sales rep notes.
-2. **AI-Driven Processing (Stage 2)**: Staged visual orchestration displaying the step-by-step intelligence pipeline:
-   - Duplicate account resolution & canonical record creation
-   - Won-account profile mining
-   - Signal extraction from unstructured notes (funding, hiring, leadership changes, tech stack)
-   - Lookalike scoring & reasoning against won profiles
-   - GTM triage holding qualified matches for review
-3. **Actionable Pipeline & Human-in-the-Loop Review (Stage 3)**:
-   - Dynamic before-to-after impact metrics calculated from real data
-   - Canonical entity cards with normalized contacts and chronologically mapped signal feeds
-   - Scored lookalikes with transparent decision criteria
-   - Review queue with interactive **Approve / Reject** actions and live counter tallies
+```text
+[Messy CRM Export] ──► [AI Resolution & ICP Mining] ──► [Lookalike Scoring] ──► [Hold for Review] ──► [Personalized Outreach]
+                                                                        └──► [Inbound Lead Qualification]
+```
 
----
+### The Problem
+Real CRM data is messy: duplicate accounts, inconsistent names, missing fields, and crucial buying signals buried in freeform sales rep notes. Reps waste hours manually researching accounts, qualifying leads, and drafting outreach.
 
-## Architecture
-
-- **Backend**: Node.js + Express
-  - `POST /api/process`: Orchestrates Groq API interaction via `groq-sdk` with structured `json_object` response format, robust JSON repair, schema validation, and error handling.
-  - `GET /api/dataset`: Serves the synthetic CRM data for raw table rendering.
-- **Frontend**: Vanilla HTML5, CSS3, and JavaScript (no heavy frontend framework dependencies).
-  - High-contrast visual progression from intentionally raw/monospaced CRM tables to a sleek, dark-mode GTM dashboard.
-  - Complete client-side state management for review queue approvals/rejections with reset capability.
-- **AI Engine**: Groq API powered by `llama-3.3-70b-versatile` for sub-second structured inference.
+### The Solution
+AI agents autonomously turn messy data into actionable pipeline:
+1. **Clean & Deduplicate**: Merges fragmented records into single canonical accounts.
+2. **Learn From Won Deals**: Analyzes converted customers to extract an Ideal Customer Profile (ICP).
+3. **Find & Score Lookalikes**: Ranks open accounts against the won profile using extracted signals (funding rounds, executive hires, team growth).
+4. **Hold for Review**: Keeps humans in control by holding high-intent prospects for review rather than auto-sending.
+5. **Qualify Inbound Leads**: Automatically scores incoming demo requests against the same ICP and suggests next actions.
+6. **Draft Personalized Outreach**: Generates tailored cold emails that reference real signals and won-customer success.
 
 ---
 
-## Setup & Installation
+## 🚀 Core Features
 
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- npm
+### 1. Stage 1 — The Messy Reality
+Visualizes raw, uncleaned CRM tables:
+- **Accounts**: Inconsistent naming (`Acme Inc`, `ACME`, `acme.com`), missing domains, and mixed company sizes.
+- **Contacts**: Fragmented titles (`VP Sales`, `Vice President of Sales`, `Head of Sales`, `CRO`).
+- **Rep Notes**: Unstructured text with hidden buying signals (Series B funding, VP hires, SDR expansion).
+- **Inbound Submissions**: Live demo requests and form submissions waiting for qualification.
 
-### 1. Install Dependencies
+### 2. Stage 2 — Autonomous Processing
+Watch the pipeline execute step-by-step:
+- Resolve duplicate accounts
+- Mine won-account profile
+- Extract structured signals with dates from notes
+- Score lookalike accounts (0–100%)
+- Hold high-confidence matches for review
+
+### 3. Stage 3 — Multi-Agent Intelligence Dashboard
+
+* **Agent 1: Lookalike Prospecting & Review Queue**
+  * **Summary Flow**: Clear before-and-after numbers (e.g. 18 raw accounts → 12 resolved → 2 won reference profiles → 4 high-match lookalikes).
+  * **Entity Clusters**: View merged records and the exact reasoning behind each merge.
+  * **Won Profile Card**: Extracted benchmark attributes (target size, stage, buying signals).
+  * **Resolved Accounts**: Clean cards with normalized contacts and chronological signal timelines.
+  * **Review Queue**: Interactive **Approve** and **Reject** buttons with live counters.
+  * **Outreach Drafter ✨**: Click on any approved account to generate a personalized cold email referencing specific signals and won-customer proof points. Includes 1-click clipboard copy and CRM simulation.
+
+* **Agent 2: Inbound Lead Qualification Agent**
+  * Evaluates inbound form submissions in real time against the won ICP.
+  * Grades each lead:
+    * 🟢 **Sales Qualified** — Strong ICP fit, routed directly to SDR/AE.
+    * 🟡 **Marketing Nurture** — Right industry, early stage, routed to nurture sequence.
+    * ⚪ **Disqualified** — Out-of-scope or student inquiries, auto-archived.
+  * Shows confidence score bar, positive/negative ICP match factors, and recommended next steps.
+  * Interactive filter chips to view leads by grade.
+
+---
+
+## 🛠️ Quick Start
+
+### 1. Clone & Install
 ```bash
+git clone https://github.com/khuswant18/workflow.git
+cd workflow
 npm install
 ```
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env`:
+### 2. Add Your Groq API Key
+Copy the example environment file:
 ```bash
 cp .env.example .env
 ```
-Edit `.env` to include your Groq API key:
+Open `.env` and add your [Groq API Key](https://console.groq.com/keys):
 ```env
 GROQ_API_KEY=your_groq_api_key_here
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-120b
 PORT=3000
 ```
 
-> **Security Note**: The `.env` file is included in `.gitignore` to prevent API keys from leaking. The Groq API is called strictly server-side; client code never has access to the secret key.
-
-### 3. Start the Server
+### 3. Run the App
 ```bash
 npm start
 ```
-The application will be accessible at:
+Open your browser at:
 ```
 http://localhost:3000
 ```
 
----
-
-## Synthetic CRM Dataset
-
-The synthetic dataset located in `data/synthetic-crm.js` contains:
-- **18 Accounts** across 3 intentional duplicate clusters (`Acme Inc`, `Bolt Logistics`, `NovaPay`), 2 won accounts, and lookalikes ranging from high-confidence matches to intentional non-matches.
-- **22 Contacts** with inconsistent titles (`VP Sales`, `Vice President of Sales`, `Head of Sales`, `CRO`) and duplicate people across merged account records.
-- **15 Freeform Rep Notes** containing rich GTM signals (funding rounds, executive appointments, team expansions, revops tool evaluations) and varying date formats.
+Click **"Run Workflow"** to see the transformation live!
 
 ---
 
-## Quality & Safety Safeguards
-- Strict JSON schema enforcement via Groq's `response_format: { type: "json_object" }`.
-- JSON repair fallback parsing and field-level validation before delivering payloads to the client.
-- Clean client-side escaping prevents XSS across unstructured note rendering.
-- Graceful degradation with actionable retry states when API limits or network issues occur.
+## 📁 Project Structure
+
+```text
+workflow/
+├── data/
+│   └── synthetic-crm.js    # Synthetic CRM dataset (accounts, contacts, notes, inbound leads)
+├── public/
+│   ├── index.html          # Clean 3-stage UI + outreach modal
+│   ├── style.css           # Premium dark-mode design system & animations
+│   └── app.js              # Client state, workflow tabs, lead filtering & modal logic
+├── server.js               # Express API + Groq structured AI agent endpoints
+├── .env.example            # Environment configuration template
+├── .gitignore              # Protects .env and dependencies
+├── package.json            # Node dependencies
+└── README.md               # Project documentation
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/dataset` | `GET` | Returns raw synthetic accounts, contacts, notes, and inbound leads |
+| `/api/process` | `POST` | Ingests CRM data, performs entity resolution, mines won profile, extracts signals, and scores lookalikes |
+| `/api/qualify` | `POST` | Grades inbound leads against the won-account ICP in real time |
+| `/api/draft-outreach` | `POST` | Generates a personalized cold outreach email for a selected account |
+
+---
+
+## 💡 Tech Stack
+
+- **Backend**: Node.js, Express
+- **AI Inference**: Groq SDK (`openai/gpt-oss-120b` or `llama-3.3-70b-versatile`) with structured JSON schema enforcement
+- **Frontend**: Vanilla HTML5, CSS3, JavaScript (zero external UI framework dependencies, fast load time)
+- **Styling**: Modern dark theme with CSS custom properties, glassmorphism, and responsive layout
+
+---
+
+## 📌 Disclaimer
+
+This is an independent proof-of-concept created to demonstrate the GTM agent workflows publicly described by Frontrunner. It uses synthetic CRM data and does not reproduce or claim access to Frontrunner's proprietary codebase.
