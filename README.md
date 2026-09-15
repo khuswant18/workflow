@@ -135,9 +135,3 @@ workflow/
 - **AI Inference**: Groq SDK (`openai/gpt-oss-120b` or `llama-3.3-70b-versatile`) with structured JSON schema enforcement
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript (zero external UI framework dependencies, fast load time)
 - **Styling**: Modern dark theme with CSS custom properties, glassmorphism, and responsive layout
-
----
-
-## 📌 Disclaimer
-
-This is an independent proof-of-concept created to demonstrate the GTM agent workflows publicly described by Frontrunner. It uses synthetic CRM data and does not reproduce or claim access to Frontrunner's proprietary codebase.
